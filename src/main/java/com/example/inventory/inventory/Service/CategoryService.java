@@ -7,5 +7,7 @@ public interface CategoryService {
 
     // Methods
     public ResponseEntity<CategoryResponseRest> search();
+
+    public ResponseEntity<CategoryResponseRest> searchById(Long id);
     
 }
