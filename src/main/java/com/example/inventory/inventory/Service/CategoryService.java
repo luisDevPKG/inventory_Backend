@@ -1,6 +1,8 @@
 package com.example.inventory.inventory.Service;
 
 import com.example.inventory.inventory.Reponse.CategoryResponseRest;
+import com.example.inventory.inventory.Model.Category;
+
 import org.springframework.http.ResponseEntity;
 
 public interface CategoryService {
@@ -9,5 +11,6 @@ public interface CategoryService {
     public ResponseEntity<CategoryResponseRest> search();
 
     public ResponseEntity<CategoryResponseRest> searchById(Long id);
-    
+
+    public ResponseEntity<CategoryResponseRest> saveCategory(Category category);
 }
