@@ -107,6 +107,67 @@ public class CategoryServiceImpl implements CategoryService{
 
         return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
     }
-    
 
+    @Override
+    @Transactional
+    public ResponseEntity<CategoryResponseRest> updateCategory(Category category, Long id) {
+            // se instancia el objeto que se va armar
+            CategoryResponseRest response = new CategoryResponseRest();
+            List<Category> list = new ArrayList<>();
+
+            try {
+                // se declara un objeto optional: porque el metodo findById devuelve un objeto optional
+                Optional<Category> categoria = categoryDao.findById(id);
+
+                if (categoria.isPresent()) {
+                    // se procede actualizar el registro
+                    categoria.get().setName(category.getName());
+                    categoria.get().setDescription(category.getDescription());
+
+                    // actualizo y guardo la categoria
+                    Category categoryToUpdate = categoryDao.save(categoria.get());
+                    if (categoryToUpdate != null) {
+                        list.add(categoryToUpdate);
+                        response.getCategoryResponse().setCategory(list);
+                        response.setMetadata("Respuesta ok", "00", "Categoria actualizada");
+                    } else {
+                        response.setMetadata("Repuesta fail", "-1", "Error no se pudo actualizar el registro");
+                        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.BAD_REQUEST);
+                    }
+
+                } else {
+                    response.setMetadata("Repuesta fail", "-1", "Error no se encuentra el registro");
+                    return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.NOT_FOUND);
+                }
+
+
+            } catch (Exception e) {
+                 // setear metadata
+                 response.setMetadata("Repuesta fail", "-1", "Error al actualizar el registro");
+                 e.getStackTrace();
+                 return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+    
+            return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<CategoryResponseRest> deleteCategory(Long id) {
+        // se instancia el objeto que se va armar
+        CategoryResponseRest response = new CategoryResponseRest();
+        try {
+            categoryDao.deleteById(id);
+            // setear metadata
+            response.setMetadata("Repuesta ok", "00", "Se elimino el registro correctamente");
+
+        } catch (Exception e) {
+             // setear metadata
+             response.setMetadata("Repuesta fail", "-1", "Error al eliminar el registro");
+             e.getStackTrace();
+             return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
+    }
+    
 }
